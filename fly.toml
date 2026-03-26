@@ -1,0 +1,14 @@
+app = "sudacchi"
+primary_region = "nrt"
+
+[build]
+
+[mounts]
+  source = "sudacchi_data"
+  destination = "/data"
+
+[env]
+  NODE_ENV = "production"
+  TZ = "Asia/Tokyo"
+  MODE = "slack"
+  DATABASE_PATH = "/data/sudacchi.db"
