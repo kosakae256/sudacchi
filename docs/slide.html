@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280, height=720">
+<title>スダッチ - プロダクト紹介</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    padding: 60px 80px;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide:last-child { page-break-after: avoid; }
+
+  .page-num {
+    position: absolute;
+    bottom: 30px;
+    right: 50px;
+    font-size: 13px;
+    color: #bbb;
+    font-weight: 300;
+  }
+
+  /* ── Cover ── */
+  .cover { justify-content: center; align-items: center; text-align: center; }
+  .cover-icon { font-size: 80px; margin-bottom: 20px; }
+  .cover h1 { font-size: 64px; font-weight: 900; letter-spacing: 4px; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 20px; color: #888; font-weight: 300; letter-spacing: 2px; margin-bottom: 40px; }
+  .cover .tagline { font-size: 26px; font-weight: 500; color: #444; line-height: 1.8; }
+  .cover .tagline em { font-style: normal; color: #4CAF50; font-weight: 700; }
+
+  /* ── Section header ── */
+  .section-header { justify-content: center; align-items: flex-start; }
+  .section-header .section-num { font-size: 14px; font-weight: 500; color: #aaa; letter-spacing: 3px; margin-bottom: 12px; }
+  .section-header h2 { font-size: 48px; font-weight: 900; line-height: 1.3; border: none; padding: 0; }
+  .section-header .section-desc { margin-top: 20px; font-size: 20px; color: #666; font-weight: 300; line-height: 1.8; max-width: 800px; }
+
+  /* ── General ── */
+  .slide h2 { font-size: 32px; font-weight: 700; margin-bottom: 32px; padding-bottom: 12px; border-bottom: 2px solid #eee; }
+  .slide h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #333; }
+  .content { flex: 1; display: flex; flex-direction: column; }
+  .content-row { display: flex; gap: 48px; flex: 1; }
+  .content-col { flex: 1; }
+
+  /* ── Concept cards ── */
+  .concept-cards { display: flex; gap: 32px; flex: 1; align-items: stretch; }
+  .concept-card { flex: 1; background: #fafafa; border-radius: 16px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .concept-card .card-icon { font-size: 48px; margin-bottom: 16px; }
+  .concept-card .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+  .concept-card .card-desc { font-size: 15px; color: #666; line-height: 1.7; }
+
+  /* ── Slack mock ── */
+  .slack-mock { background: #f8f8f8; border-radius: 12px; padding: 24px; font-size: 15px; line-height: 1.6; }
+  .slack-channel { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; color: #333; }
+  .slack-msg { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
+  .slack-avatar { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .slack-avatar.user { background: #e3f2fd; }
+  .slack-avatar.bot { background: #e8f5e9; }
+  .slack-msg-body { flex: 1; }
+  .slack-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .slack-text { font-size: 15px; line-height: 1.6; color: #333; }
+
+  /* ── Status bar (CSS) ── */
+  .status-bars { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .sbar { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; }
+  .sbar-icon { width: 20px; text-align: center; }
+  .sbar-track { width: 100px; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
+  .sbar-fill { height: 100%; border-radius: 4px; }
+  .sbar-fill.hunger { background: #81c784; }
+  .sbar-fill.mood { background: #64b5f6; }
+  .sbar-fill.energy { background: #ffb74d; }
+  .sbar-val { font-size: 12px; min-width: 24px; }
+  .sbar-delta { font-size: 11px; font-weight: 700; }
+  .sbar-delta.plus { color: #4CAF50; }
+  .sbar-delta.minus { color: #e57373; }
+
+  /* ── Param grid ── */
+  .param-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .param-item { background: #fafafa; border-radius: 12px; padding: 24px; }
+  .param-label { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .param-label .param-icon { font-size: 24px; }
+  .param-detail { font-size: 14px; color: #666; line-height: 1.6; }
+
+  /* ── Growth ── */
+  .growth-flow { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 20px 0 28px; }
+  .growth-stage { background: #fafafa; border-radius: 12px; padding: 20px 16px; text-align: center; min-width: 120px; }
+  .growth-stage .stage-icon { font-size: 36px; margin-bottom: 6px; }
+  .growth-stage .stage-name { font-size: 16px; font-weight: 700; }
+  .growth-stage .stage-time { font-size: 12px; color: #999; margin-top: 4px; }
+  .growth-arrow { font-size: 24px; color: #ccc; }
+
+  /* ── Food grid ── */
+  .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .food-item { background: #fafafa; border-radius: 10px; padding: 16px; text-align: center; }
+  .food-item .food-emoji { font-size: 32px; margin-bottom: 6px; }
+  .food-item .food-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .food-item .food-effect { font-size: 12px; color: #888; }
+  .food-item.favorite { background: #e8f5e9; border: 2px solid #81c784; }
+
+  /* ── Persona ── */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .persona-item { background: #fafafa; border-radius: 10px; padding: 20px; }
+  .persona-condition { font-size: 13px; font-weight: 700; color: #999; margin-bottom: 6px; }
+  .persona-example { font-size: 16px; line-height: 1.6; }
+
+  /* ── Timeline ── */
+  .timeline { display: flex; flex-direction: column; gap: 14px; }
+  .timeline-item { display: flex; align-items: flex-start; gap: 16px; }
+  .timeline-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+  .timeline-dot.danger { background: #e57373; }
+  .timeline-dot.warning { background: #ffb74d; }
+  .timeline-dot.info { background: #64b5f6; }
+  .timeline-time { font-size: 13px; font-weight: 700; color: #999; margin-bottom: 2px; }
+  .timeline-text { font-size: 15px; }
+
+  /* ── Events ── */
+  .event-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .event-card { background: #fafafa; border-radius: 10px; padding: 20px; }
+  .event-header { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .event-desc { font-size: 14px; color: #666; line-height: 1.5; }
+  .event-prob { font-size: 12px; color: #aaa; margin-top: 6px; }
+
+  /* ── Feature list ── */
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .feature-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 18px; line-height: 1.6; }
+  .feat-icon { font-size: 22px; flex-shrink: 0; }
+
+  /* ── End ── */
+  .end-slide { justify-content: center; align-items: center; text-align: center; }
+  .end-slide .end-icon { font-size: 100px; margin-bottom: 24px; }
+  .end-slide h2 { font-size: 40px; font-weight: 900; border: none; padding: 0; margin-bottom: 16px; }
+  .end-slide p { font-size: 20px; color: #888; font-weight: 300; }
+
+  @media print {
+    body { margin: 0; }
+    .slide { margin: 0; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1: Cover ===== -->
+<div class="slide cover">
+  <div class="cover-icon">🍋</div>
+  <h1>スダッチ</h1>
+  <div class="subtitle">S U D A C C H I</div>
+  <div class="tagline">
+    Slack に住む、<em>AI仮想ペット</em><br>
+    話しかけて、ごはんをあげて、一緒に遊ぶ。<br>
+    放置すると、死んじゃいます。
+  </div>
+  <div class="page-num">1</div>
+</div>
+
+<!-- ===== SLIDE 2: What ===== -->
+<div class="slide section-header">
+  <div class="section-num">01 — OVERVIEW</div>
+  <h2>スダッチとは？</h2>
+  <div class="section-desc">
+    Slackチャンネルに住むAI仮想ペット。<br>
+    たまごっちのように世話をしないとステータスが悪化し、最終的に死んでしまいます。<br><br>
+    AIが人格を持ち、感情豊かに反応することで、<br>
+    単なるゲームではなく<strong>「生き物を育てている」体験</strong>を提供します。
+  </div>
+  <div class="page-num">2</div>
+</div>
+
+<!-- ===== SLIDE 3: Concept ===== -->
+<div class="slide">
+  <h2>コンセプト</h2>
+  <div class="concept-cards">
+    <div class="concept-card">
+      <div class="card-icon">🍋</div>
+      <div class="card-title">名前の由来</div>
+      <div class="card-desc">すだち（徳島の柑橘）<br>+ たまごっち<br>小さくて愛嬌がある存在</div>
+    </div>
+    <div class="concept-card">
+      <div class="card-icon">😤</div>
+      <div class="card-title">性格</div>
+      <div class="card-desc">生意気だけど憎めない<br>放置すると拗ねる<br>構うと調子に乗る</div>
+    </div>
+    <div class="concept-card">
+      <div class="card-icon">💬</div>
+      <div class="card-title">自然な対話</div>
+      <div class="card-desc">コマンド不要<br>普通に話しかけるだけ<br>絵文字でごはんをあげる</div>
+    </div>
+    <div class="concept-card">
+      <div class="card-icon">💀</div>
+      <div class="card-title">緊張感</div>
+      <div class="card-desc">放置すると本当に死ぬ<br>チームで世話をする<br>責任と愛着が生まれる</div>
+    </div>
+  </div>
+  <div class="page-num">3</div>
+</div>
+
+<!-- ===== SLIDE 4: Slack UI - Basic ===== -->
+<div class="slide">
+  <h2>Slack UI : 基本の会話</h2>
+  <div class="content-row">
+    <div class="content-col" style="flex:1.3">
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg">
+          <div class="slack-avatar user">👤</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">okada</div>
+            <div class="slack-text">今日の調子どう？</div>
+          </div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">んー、まあまあかな！おなかすいてきたけど...（チラッ）</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:80%"></div></div><span class="sbar-val">80</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:70%"></div></div><span class="sbar-val">70</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-col">
+      <h3 style="margin-top:8px">ポイント</h3>
+      <ul class="feature-list" style="margin-top:8px">
+        <li><span class="feat-icon">💬</span>メンション不要。普通に話しかけるだけ</li>
+        <li><span class="feat-icon">📊</span>毎回ステータスバーが表示される</li>
+        <li><span class="feat-icon">🎭</span>ステータスに応じて口調が変わる</li>
+      </ul>
+    </div>
+  </div>
+  <div class="page-num">4</div>
+</div>
+
+<!-- ===== SLIDE 5: Feeding ===== -->
+<div class="slide">
+  <h2>Slack UI : ごはんをあげる</h2>
+  <div class="content-row">
+    <div class="content-col" style="flex:1.3">
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg">
+          <div class="slack-avatar user">👤</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">okada</div>
+            <div class="slack-text" style="font-size:32px">🍛</div>
+          </div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">カレーだ！！やったー！辛口？甘口？ぼくは甘口がいいな〜🍛</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:75%"></div></div><span class="sbar-val">75</span><span class="sbar-delta plus">+30</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:70%"></div></div><span class="sbar-val">70</span><span class="sbar-delta plus">+5</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-col">
+      <h3 style="margin-top:8px">食べ物の絵文字を送るだけ</h3>
+      <div style="margin-top:16px">
+        <div class="food-grid">
+          <div class="food-item"><div class="food-emoji">🍚</div><div class="food-name">主食</div><div class="food-effect">おなか +30</div></div>
+          <div class="food-item"><div class="food-emoji">🍰</div><div class="food-name">おやつ</div><div class="food-effect">きげん +20</div></div>
+          <div class="food-item"><div class="food-emoji">🍊</div><div class="food-name">フルーツ</div><div class="food-effect">バランス型</div></div>
+          <div class="food-item favorite"><div class="food-emoji">🍋</div><div class="food-name">すだち</div><div class="food-effect">大好物！全回復</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">5</div>
+</div>
+
+<!-- ===== SLIDE 6: Play & Pet ===== -->
+<div class="slide">
+  <h2>Slack UI : 遊ぶ・なでる</h2>
+  <div class="content-row">
+    <div class="content-col">
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg">
+          <div class="slack-avatar user">👤</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">tanaka</div>
+            <div class="slack-text">しりとりしよう</div>
+          </div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">いいよ！ぼくからね。「すだち」！</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:80%"></div></div><span class="sbar-val">80</span><span class="sbar-delta plus">+20</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:50%"></div></div><span class="sbar-val">50</span><span class="sbar-delta minus">-10</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-col">
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg">
+          <div class="slack-avatar user">👤</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">suzuki</div>
+            <div class="slack-text">いい子だね</div>
+          </div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">えへへ〜！もっと言って！！</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:72%"></div></div><span class="sbar-val">72</span><span class="sbar-delta plus">+5</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">6</div>
+</div>
+
+<!-- ===== SLIDE 7: Status ===== -->
+<div class="slide">
+  <h2>ステータスシステム</h2>
+  <div class="content" style="gap:24px">
+    <div class="param-grid">
+      <div class="param-item">
+        <div class="param-label"><span class="param-icon">🍚</span> おなか (hunger)</div>
+        <div class="param-detail">時間経過: <strong>-5 / 時間</strong><br>0のまま12時間で死亡</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label"><span class="param-icon">😊</span> きげん (mood)</div>
+        <div class="param-detail">時間経過: <strong>-3 / 時間</strong><br>0になると拗ねて反応しなくなる</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label"><span class="param-icon">⚡</span> げんき (energy)</div>
+        <div class="param-detail">時間経過: <strong>-2 / 時間</strong><br>0になると強制睡眠</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label"><span class="param-icon">💛</span> なかよし度 (bond)</div>
+        <div class="param-detail">時間経過: <strong>-1 / 日</strong><br>低いと敬語になって距離を取る</div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:15px;color:#999">全パラメータは 0〜100。時間とともに自然減少し、ユーザーの行動で回復する</div>
+  </div>
+  <div class="page-num">7</div>
+</div>
+
+<!-- ===== SLIDE 8: Growth ===== -->
+<div class="slide">
+  <h2>成長と死</h2>
+  <div class="content">
+    <h3>成長段階</h3>
+    <div class="growth-flow">
+      <div class="growth-stage"><div class="stage-icon">🥚</div><div class="stage-name">たまご</div><div class="stage-time">孵化まで</div></div>
+      <div class="growth-arrow">→</div>
+      <div class="growth-stage"><div class="stage-icon">🐣</div><div class="stage-name">赤ちゃん</div><div class="stage-time">3日間</div></div>
+      <div class="growth-arrow">→</div>
+      <div class="growth-stage"><div class="stage-icon">🐥</div><div class="stage-name">こども</div><div class="stage-time">7日間</div></div>
+      <div class="growth-arrow">→</div>
+      <div class="growth-stage"><div class="stage-icon">🍋</div><div class="stage-name">おとな</div><div class="stage-time">14日間</div></div>
+      <div class="growth-arrow">→</div>
+      <div class="growth-stage"><div class="stage-icon">👑</div><div class="stage-name">ベテラン</div><div class="stage-time">30日〜</div></div>
+    </div>
+    <p style="text-align:center;font-size:15px;color:#888;margin-bottom:28px">各段階で性格・語彙・反応パターンが変化します</p>
+    <h3>死亡条件</h3>
+    <div style="display:flex;gap:20px;margin-top:8px">
+      <div class="param-item" style="flex:1;border-left:4px solid #e57373">
+        <div style="font-size:16px;font-weight:700;color:#e57373;margin-bottom:6px">餓死</div>
+        <div class="param-detail">おなかが 0 のまま 12時間 経過</div>
+      </div>
+      <div class="param-item" style="flex:1;border-left:4px solid #e57373">
+        <div style="font-size:16px;font-weight:700;color:#e57373;margin-bottom:6px">複合悪化</div>
+        <div class="param-detail">おなか + きげんが同時に 0 で 6時間</div>
+      </div>
+      <div class="param-item" style="flex:1;border-left:4px solid #e57373">
+        <div style="font-size:16px;font-weight:700;color:#e57373;margin-bottom:6px">全体衰弱</div>
+        <div class="param-detail">全パラメータが 20以下 のまま 24時間</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:14px;color:#aaa;margin-top:16px">死亡すると新しいスダッチを孵化させられます（データはリセット）</p>
+  </div>
+  <div class="page-num">8</div>
+</div>
+
+<!-- ===== SLIDE 9: Autonomous ===== -->
+<div class="slide">
+  <h2>スダッチからの自発的な行動</h2>
+  <div class="content-row">
+    <div class="content-col">
+      <h3>状態による行動</h3>
+      <div class="timeline" style="margin-top:8px">
+        <div class="timeline-item"><div class="timeline-dot warning"></div><div><div class="timeline-time">おなか &lt; 30</div><div class="timeline-text">「おなかすいた...だれかごはんくれない？」</div></div></div>
+        <div class="timeline-item"><div class="timeline-dot info"></div><div><div class="timeline-time">きげん &lt; 20</div><div class="timeline-text">「...べつに、さみしくないし」</div></div></div>
+        <div class="timeline-item"><div class="timeline-dot warning"></div><div><div class="timeline-time">放置 &gt; 6時間</div><div class="timeline-text">「おーい、だれかいないの？」</div></div></div>
+        <div class="timeline-item"><div class="timeline-dot danger"></div><div><div class="timeline-time">放置 &gt; 12時間</div><div class="timeline-text">「...もう忘れられちゃったのかな」</div></div></div>
+        <div class="timeline-item"><div class="timeline-dot danger"></div><div><div class="timeline-time">放置 &gt; 20時間</div><div class="timeline-text">「たすけて...げんきが...」</div></div></div>
+      </div>
+    </div>
+    <div class="content-col">
+      <h3>時間帯による行動</h3>
+      <div class="slack-mock" style="margin-top:8px;margin-bottom:20px">
+        <div class="slack-msg"><div class="slack-avatar bot">🍋</div><div class="slack-msg-body"><div class="slack-name">スダッチ <span style="color:#aaa;font-weight:300">9:00</span></div><div class="slack-text">おはよー！今日もよろしくね！</div></div></div>
+        <div class="slack-msg"><div class="slack-avatar bot">🍋</div><div class="slack-msg-body"><div class="slack-name">スダッチ <span style="color:#aaa;font-weight:300">12:00</span></div><div class="slack-text">おひるだよ！おなかぺこぺこ！</div></div></div>
+        <div class="slack-msg" style="margin-bottom:0"><div class="slack-avatar bot">🍋</div><div class="slack-msg-body"><div class="slack-name">スダッチ <span style="color:#aaa;font-weight:300">23:00</span></div><div class="slack-text">ふわぁ...おやすみなさい</div></div></div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:16px;font-size:14px;color:#666;line-height:1.6">
+        <strong>制限:</strong><br>
+        ・同カテゴリの投稿は 2時間以上 間隔<br>
+        ・1日の自発投稿は 最大8回<br>
+        ・深夜 (0:00〜7:00) は寝ている
+      </div>
+    </div>
+  </div>
+  <div class="page-num">9</div>
+</div>
+
+<!-- ===== SLIDE 10: Personality ===== -->
+<div class="slide">
+  <h2>Slack UI : ステータスによる反応の違い</h2>
+  <div class="content-row">
+    <div class="content-col">
+      <p style="font-size:14px;color:#4CAF50;font-weight:700;margin-bottom:8px">元気な時</p>
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg"><div class="slack-avatar user">👤</div><div class="slack-msg-body"><div class="slack-name">okada</div><div class="slack-text">おはよう</div></div></div>
+        <div class="slack-msg"><div class="slack-avatar bot">🍋</div><div class="slack-msg-body"><div class="slack-name">スダッチ</div><div class="slack-text">おはよー！！今日もいい天気だね！なにして遊ぶ？ねえねえ！</div>
+          <div class="status-bars">
+            <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:90%"></div></div><span class="sbar-val">90</span></div>
+            <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:92%"></div></div><span class="sbar-val">92</span></div>
+            <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:80%"></div></div><span class="sbar-val">80</span></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+    <div class="content-col">
+      <p style="font-size:14px;color:#e57373;font-weight:700;margin-bottom:8px">衰弱している時</p>
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg"><div class="slack-avatar user">👤</div><div class="slack-msg-body"><div class="slack-name">okada</div><div class="slack-text">おはよう</div></div></div>
+        <div class="slack-msg"><div class="slack-avatar bot">🍋</div><div class="slack-msg-body"><div class="slack-name">スダッチ</div><div class="slack-text">...おはよ。...おなか...すいた...</div>
+          <div class="status-bars">
+            <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:8%"></div></div><span class="sbar-val">8</span></div>
+            <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:15%"></div></div><span class="sbar-val">15</span></div>
+            <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:12%"></div></div><span class="sbar-val">12</span></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">10</div>
+</div>
+
+<!-- ===== SLIDE 11: Personality traits ===== -->
+<div class="slide">
+  <h2>性格と感情表現</h2>
+  <div class="content-row">
+    <div class="content-col" style="flex:0.8">
+      <h3>ベース性格</h3>
+      <ul class="feature-list" style="margin-top:8px;font-size:16px">
+        <li><span class="feat-icon">🗣</span>一人称は「ぼく」</li>
+        <li><span class="feat-icon">👶</span>子供っぽいが成長で変化</li>
+        <li><span class="feat-icon">🍋</span>すだちに異常な愛着</li>
+        <li><span class="feat-icon">🎭</span>テンションの波が激しい</li>
+        <li><span class="feat-icon">📝</span>返答は基本短い</li>
+      </ul>
+    </div>
+    <div class="content-col" style="flex:1.2">
+      <h3>ステータスで変わる性格</h3>
+      <div class="persona-grid" style="margin-top:8px">
+        <div class="persona-item"><div class="persona-condition">🍚😊 おなか高 & きげん高</div><div class="persona-example">ハイテンション！冗談を言う</div></div>
+        <div class="persona-item"><div class="persona-condition">🍚⬇ おなか低</div><div class="persona-example">食べ物の話ばかり...元気ない</div></div>
+        <div class="persona-item"><div class="persona-condition">😊⬇ きげん低</div><div class="persona-example">「べつに」塩対応モード</div></div>
+        <div class="persona-item"><div class="persona-condition">⚡⬇ げんき低</div><div class="persona-example">zzZ...寝落ちする...zzZ</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">11</div>
+</div>
+
+<!-- ===== SLIDE 12: Events ===== -->
+<div class="slide">
+  <h2>イベントシステム</h2>
+  <div class="content-row">
+    <div class="content-col">
+      <h3>定期イベント</h3>
+      <div class="event-grid" style="margin-top:8px">
+        <div class="event-card"><div class="event-header">🎂 誕生日</div><div class="event-desc">年1回。お祝いすると全ステータスにボーナス</div></div>
+        <div class="event-card"><div class="event-header">✨ 成長イベント</div><div class="event-desc">段階が上がると進化演出。新しい反応パターンが解放</div></div>
+        <div class="event-card"><div class="event-header">🌸 季節イベント</div><div class="event-desc">季節に合った特別な反応や絵文字衣装</div></div>
+      </div>
+    </div>
+    <div class="content-col">
+      <h3>ランダムイベント</h3>
+      <div class="event-grid" style="margin-top:8px">
+        <div class="event-card"><div class="event-header">💎 宝物発見</div><div class="event-desc">スダッチが何か見つけてくる</div><div class="event-prob">5% / 日</div></div>
+        <div class="event-card"><div class="event-header">🤧 風邪</div><div class="event-desc">看病が必要。放置すると悪化</div><div class="event-prob">3% / 日（げんき&lt;30時）</div></div>
+        <div class="event-card"><div class="event-header">💭 夢の話</div><div class="event-desc">朝、見た夢を教えてくれる</div><div class="event-prob">10% / 朝</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">12</div>
+</div>
+
+<!-- ===== SLIDE 13: Multi-user ===== -->
+<div class="slide">
+  <h2>マルチユーザー : チームで育てる</h2>
+  <div class="content-row">
+    <div class="content-col" style="flex:1.3">
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg">
+          <div class="slack-avatar user" style="background:#e3f2fd">👤</div>
+          <div class="slack-msg-body"><div class="slack-name">okada</div><div class="slack-text" style="font-size:28px">🍗</div></div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">からあげ！okadaさんいつもありがとー！大好き！</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:80%"></div></div><span class="sbar-val">80</span><span class="sbar-delta plus">+20</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:78%"></div></div><span class="sbar-val">78</span><span class="sbar-delta plus">+10</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar user" style="background:#fce4ec">👤</div>
+          <div class="slack-msg-body"><div class="slack-name">tanaka</div><div class="slack-text">よしよし</div></div>
+        </div>
+        <div class="slack-msg" style="margin-bottom:0">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">tanakaさん...ひさしぶりですね。（ちょっとよそよそしい）</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:80%"></div></div><span class="sbar-val">80</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:80%"></div></div><span class="sbar-val">80</span><span class="sbar-delta plus">+2</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-col">
+      <h3 style="margin-top:8px">ユーザー別の関係性</h3>
+      <ul class="feature-list" style="margin-top:12px;font-size:16px">
+        <li><span class="feat-icon">👥</span>スダッチは1体。チーム全員で世話</li>
+        <li><span class="feat-icon">💛</span>ユーザーごとに「なかよし度」を管理</li>
+        <li><span class="feat-icon">🏆</span>よく世話する人には特別な反応</li>
+        <li><span class="feat-icon">🧊</span>疎遠だと敬語になる</li>
+        <li><span class="feat-icon">📊</span>貢献度ランキング表示</li>
+      </ul>
+    </div>
+  </div>
+  <div class="page-num">13</div>
+</div>
+
+<!-- ===== SLIDE 14: Memory ===== -->
+<div class="slide">
+  <h2>記憶システム</h2>
+  <div class="content-row">
+    <div class="content-col" style="flex:1.3">
+      <div class="slack-mock">
+        <div class="slack-channel"># sudacchi</div>
+        <div class="slack-msg">
+          <div class="slack-avatar user">👤</div>
+          <div class="slack-msg-body"><div class="slack-name">okada</div><div class="slack-text" style="font-size:28px">🍛</div></div>
+        </div>
+        <div class="slack-msg">
+          <div class="slack-avatar bot">🍋</div>
+          <div class="slack-msg-body">
+            <div class="slack-name">スダッチ</div>
+            <div class="slack-text">またカレー！okadaさんカレー好きだよね〜。3回目だよ！ぼくも好きになってきた🍛</div>
+            <div class="status-bars">
+              <div class="sbar"><span class="sbar-icon">🍚</span><div class="sbar-track"><div class="sbar-fill hunger" style="width:80%"></div></div><span class="sbar-val">80</span><span class="sbar-delta plus">+30</span></div>
+              <div class="sbar"><span class="sbar-icon">😊</span><div class="sbar-track"><div class="sbar-fill mood" style="width:72%"></div></div><span class="sbar-val">72</span><span class="sbar-delta plus">+5</span></div>
+              <div class="sbar"><span class="sbar-icon">⚡</span><div class="sbar-track"><div class="sbar-fill energy" style="width:60%"></div></div><span class="sbar-val">60</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-col">
+      <h3 style="margin-top:8px">スダッチは覚えている</h3>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:12px">
+        <div class="param-item"><div class="param-label" style="font-size:16px">🧠 短期記憶</div><div class="param-detail">直近の会話の文脈を覚えている</div></div>
+        <div class="param-item"><div class="param-label" style="font-size:16px">💾 長期記憶</div><div class="param-detail">好きな食べ物、初めての体験、特別な日など重要なことを記憶</div></div>
+        <div class="param-item"><div class="param-label" style="font-size:16px">👥 関係性記憶</div><div class="param-detail">ユーザーごとの性格・好み・会話傾向を学習</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">14</div>
+</div>
+
+<!-- ===== SLIDE 15: Future ===== -->
+<div class="slide">
+  <h2>今後の拡張案</h2>
+  <div class="content" style="justify-content:center">
+    <div class="concept-cards" style="margin-bottom:24px">
+      <div class="concept-card"><div class="card-icon">👕</div><div class="card-title">アイテムシステム</div><div class="card-desc">おもちゃ、服をSlack絵文字で表現して着せ替え</div></div>
+      <div class="concept-card"><div class="card-icon">🎮</div><div class="card-title">ミニゲーム</div><div class="card-desc">Slackのインタラクティブメッセージで本格ゲーム</div></div>
+      <div class="concept-card"><div class="card-icon">🏠</div><div class="card-title">複数スダッチ</div><div class="card-desc">チャンネルごとに別の個体を飼育</div></div>
+      <div class="concept-card"><div class="card-icon">🌿</div><div class="card-title">すだち農園</div><div class="card-desc">すだちを育てて収穫しスダッチに食べさせる</div></div>
+    </div>
+  </div>
+  <div class="page-num">15</div>
+</div>
+
+<!-- ===== SLIDE 16: End ===== -->
+<div class="slide end-slide">
+  <div class="end-icon">🍋</div>
+  <h2>ぼくを、育ててくれる？</h2>
+  <p>Slack に住む AI仮想ペット「スダッチ」</p>
+  <div class="page-num">16</div>
+</div>
+
+</body>
+</html>
