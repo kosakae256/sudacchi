@@ -1,5 +1,5 @@
 app = 'sudacchi'
-primary_region = 'nrt'
+primary_region = 'iad'
 
 [build]
 
