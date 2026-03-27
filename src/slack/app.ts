@@ -35,9 +35,12 @@ app.message(async ({ message, say }) => {
 	const hasOtherMention = mentions.some((m) => m !== `<@${botUserId}>`);
 	if (hasOtherMention) return;
 
-	const sudacchi = getAliveSudacchi(db);
+	let sudacchi = getAliveSudacchi(db);
 	if (!sudacchi) {
-		await say("スダッチはまだいません...🥚");
+		const { randomUUID } = await import("node:crypto");
+		const { createSudacchi } = await import("../db/repository/sudacchi.js");
+		sudacchi = createSudacchi(db, randomUUID(), new Date());
+		await say("🥚 スダッチが生まれました！");
 		return;
 	}
 
